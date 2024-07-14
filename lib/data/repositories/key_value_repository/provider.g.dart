@@ -24,7 +24,7 @@ final keyValueRepositoryProvider = Provider<KeyValueRepositoryBase>.internal(
 );
 
 typedef KeyValueRepositoryRef = ProviderRef<KeyValueRepositoryBase>;
-String _$isFirstLaunchHash() => r'e89e371898bab6c14039924d5e8a09af49a35f91';
+String _$isFirstLaunchHash() => r'b1ee25d19d2e025364077f056c869fd4fbcb6b37';
 
 /// See also [isFirstLaunch].
 @ProviderFor(isFirstLaunch)

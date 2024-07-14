@@ -15,12 +15,12 @@ Stream<bool?> isFirstLaunch(IsFirstLaunchRef ref) async* {
   final repository = ref.read(keyValueRepositoryProvider);
 
   // 最初の値を取得し、yieldを使用してStreamに出力
-  yield await repository.getIsFirstLaunch();
+  yield await repository.getIsFirstLogin();
 
   // リポジトリの値変更通知を購読し、キーの変更のみにフィルターをかける
   await for (final _ in repository.onValueChange
-      .where((key) => key == KeyValueRepository.isFirstLaunchKey)) {
+      .where((key) => key == KeyValueRepository.isFirstLoginKey)) {
     // 設定が変更されたとき、新しい値を取得し、yieldでStreamに出力
-    yield await repository.getIsFirstLaunch();
+    yield await repository.getIsFirstLogin();
   }
 }

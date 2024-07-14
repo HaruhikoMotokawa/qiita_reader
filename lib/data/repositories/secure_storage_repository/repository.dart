@@ -6,7 +6,7 @@ import 'package:qiita_reader/data/local_sources/secure_storage.dart';
 abstract interface class SecureStorageRepositoryBase {
   Stream<String> get onValueChange;
   Future<String?> getAccessToken();
-  Future<void> setAccessToken(String token);
+  Future<void> setAccessToken(String? token);
 }
 
 class SecureStorageRepository implements SecureStorageRepositoryBase {
@@ -22,10 +22,10 @@ class SecureStorageRepository implements SecureStorageRepositoryBase {
   Stream<String> get onValueChange => _onValueChanged.stream;
 
   @override
-  Future<String?> getAccessToken() => _get<String?>(accessTokenKey);
+  Future<String?> getAccessToken() => _get<String>(accessTokenKey);
 
   @override
-  Future<void> setAccessToken(String token) => _set(accessTokenKey, token);
+  Future<void> setAccessToken(String? token) => _set(accessTokenKey, token);
 
   Future<T?> _get<T>(String key) async {
     final secureStorage = ref.read(secureStorageProvider);

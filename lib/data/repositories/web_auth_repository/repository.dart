@@ -26,7 +26,7 @@ class WebAuthRepository implements WebAuthRepositoryBase {
         // 認証を行う問い合わせ先を指定
         url: url,
         // あらかじめ登録した認証が終わったら認可コードを返却する先（このアプリ）の名称を指定
-        callbackUrlScheme: 'fwa2sample',
+        callbackUrlScheme: 'qiita-reader',
         // ここをtrueにしておくと、iOSだと処理を開始した時の内部ブラウザに移動する時の
         // 確認のダイアログの表示が省略される
         options: const FlutterWebAuth2Options(preferEphemeral: true),

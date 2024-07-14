@@ -16,4 +16,6 @@ abstract final class Constants {
       'state': state,
     }).toString();
   }
+
+  static const tokenEndPoint = '/api/v2/access_tokens';
 }

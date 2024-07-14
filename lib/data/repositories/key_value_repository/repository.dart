@@ -12,10 +12,10 @@ abstract interface class KeyValueRepositoryBase {
   Stream<String> get onValueChange;
 
   /// アプリの初回起動の設定を取得
-  Future<bool?> getIsFirstLaunch();
+  Future<bool?> getIsFirstLogin();
 
   /// アプリの初回起動の設定を保存
-  Future<void> setIsFirstLaunch({bool? value});
+  Future<void> setIsFirstLogin({bool? value});
 
   /// 全てのデータを初期化する
   Future<void> initData();
@@ -36,7 +36,7 @@ class KeyValueRepository implements KeyValueRepositoryBase {
   // staticで定義する
 
   /// アイコン設定のキー
-  static const isFirstLaunchKey = 'isFirstLaunch';
+  static const isFirstLoginKey = 'isFirstLogin';
 
   /// 設定値の変更をアプリケーション全体にブロードキャストするための`StreamController`
   final _onValueChanged = StreamController<String>.broadcast();
@@ -45,10 +45,10 @@ class KeyValueRepository implements KeyValueRepositoryBase {
   Stream<String> get onValueChange => _onValueChanged.stream;
 
   @override
-  Future<bool?> getIsFirstLaunch() async => _get<bool?>(isFirstLaunchKey);
+  Future<bool?> getIsFirstLogin() async => _get<bool>(isFirstLoginKey);
 
   @override
-  Future<void> setIsFirstLaunch({bool? value}) => _set(isFirstLaunchKey, value);
+  Future<void> setIsFirstLogin({bool? value}) => _set(isFirstLoginKey, value);
 
   @override
   Future<void> initData() async {
@@ -56,7 +56,7 @@ class KeyValueRepository implements KeyValueRepositoryBase {
     await pref.clear();
 
     // カスケード記法で重複する`_onValueChanged`を一つに省略している
-    _onValueChanged.add(isFirstLaunchKey);
+    _onValueChanged.add(isFirstLoginKey);
   }
 
   /// 指定されたキーに関連付けられたデータをSharedPreferencesから取得します。
