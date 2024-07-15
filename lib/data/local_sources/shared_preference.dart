@@ -9,7 +9,7 @@ part 'shared_preference.g.dart';
 Future<SharedPreferences> sharedPreferences(SharedPreferencesRef ref) async {
   try {
     // 全ての SharedPreferences のキーに接頭辞を設定
-    SharedPreferences.setPrefix('shared_preference_sample');
+    SharedPreferences.setPrefix('qiita_reader');
   } catch (error, stackTrace) {
     logger.d(
       'SharedPreferences.setPrefixエラー',

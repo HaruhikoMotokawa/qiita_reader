@@ -6,7 +6,7 @@ part of 'shared_preference.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sharedPreferencesHash() => r'22d967c5be52b1ec2df81250b5792244642d46ff';
+String _$sharedPreferencesHash() => r'9325cbf41de7173bc0dfdfdfd5fb7cae2c51f9ab';
 
 /// SharedPreferencesのインスタンスを非同期に生成
 ///

@@ -32,16 +32,19 @@ class AuthService implements AuthServiceBase {
 
   @override
   Future<void> login() async {
-    // await _initToken();
+    // アプリを使って一回でもログインしたかどうかを確認
     final isFirstLogin = await _keyValueStore.getIsFirstLogin();
     if (isFirstLogin != null && isFirstLogin) {
+      // ログインしたことがあればセキュアストレージをnullにする
       await _secureStorage.setAccessToken(null);
     }
-    // webAuthで認可コードを撮りにいく
+
+    // webAuthで認可コードをとりにいく
     final code = await _webAuth.fetchAuthorizationCode(
       url: Constants.authUrl,
       callbackUrlScheme: 'qiita-reader',
     );
+
     // もらった認可コードでアクセストークンを取得する
     final queryParameters = {
       'client_id': Env.clientId,
@@ -55,11 +58,12 @@ class AuthService implements AuthServiceBase {
     final data = response.data;
     if (data != null) {
       final accessToken = data['token'];
-      // アクセストークンをセキュアに保存する
+
+      // アクセストークンをセキュアストレージに保存する
       if (accessToken is String) {
         await _secureStorage.setAccessToken(accessToken);
-        // final result = await _keyValueStore.getIsFirstLogin();
         if (isFirstLogin == null || isFirstLogin == true) {
+          // 今回が初めてのログインだった場合はフラグをfalseで保存する
           await _keyValueStore.setIsFirstLogin(value: false);
         }
       }
@@ -68,10 +72,14 @@ class AuthService implements AuthServiceBase {
 
   @override
   Future<void> logout() async {
+    // 保存されたアクセストークンを取得
     final accessToken = await _secureStorage.getAccessToken();
     if (accessToken == null) return;
+
+    // サーバーにアクセストークンの破棄を要求
     final path = '${Constants.tokenEndPoint}/$accessToken';
     final response = await _httpClient.delete<Response<dynamic>>(path);
+    // サーバーで削除が成功したら実行
     if (response.statusCode == 204) {
       // セキュアストレージのアクセストークンを削除する
       await _secureStorage.setAccessToken(null);
