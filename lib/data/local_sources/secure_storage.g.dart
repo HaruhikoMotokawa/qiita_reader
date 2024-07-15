@@ -8,7 +8,7 @@ part of 'secure_storage.dart';
 
 String _$secureStorageHash() => r'814862b6a764930c284808468e18dc62d5812474';
 
-/// FlutterSecureStorageのインスタンスを非同期に生成
+/// FlutterSecureStorageのインスタンスを生成
 ///
 /// Copied from [secureStorage].
 @ProviderFor(secureStorage)

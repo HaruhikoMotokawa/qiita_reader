@@ -20,6 +20,7 @@ class WebAuth2Wrapper {
   }
 }
 
+/// FlutterWebAuth2のスタティックメソッドをラップするクラスを提供する
 @Riverpod(keepAlive: true)
 WebAuth2Wrapper webAuth(WebAuthRef ref) {
   return const WebAuth2Wrapper();

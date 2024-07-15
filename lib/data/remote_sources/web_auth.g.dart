@@ -8,7 +8,9 @@ part of 'web_auth.dart';
 
 String _$webAuthHash() => r'9e17b30d1e1532c834915c391d61e8c94ef4fc4e';
 
-/// See also [webAuth].
+/// FlutterWebAuth2のスタティックメソッドをラップするクラスを提供する
+///
+/// Copied from [webAuth].
 @ProviderFor(webAuth)
 final webAuthProvider = Provider<WebAuth2Wrapper>.internal(
   webAuth,

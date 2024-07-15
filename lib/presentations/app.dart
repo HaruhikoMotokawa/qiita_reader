@@ -8,6 +8,7 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
+      // go_routerによるルーティングを設定
       routerConfig: ref.read(appRouterProvider),
     );
   }

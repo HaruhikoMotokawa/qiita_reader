@@ -8,7 +8,9 @@ part of 'http.dart';
 
 String _$httpHash() => r'8b452d9fb1aec8aef65ea048d9b0c7879d2c66fc';
 
-/// See also [http].
+/// Dioのインスタンスを生成する
+///
+/// Copied from [http].
 @ProviderFor(http)
 final httpProvider = Provider<Dio>.internal(
   http,
