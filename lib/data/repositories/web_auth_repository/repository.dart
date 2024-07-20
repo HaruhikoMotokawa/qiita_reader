@@ -1,14 +1,14 @@
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:qiita_reader/data/remote_sources/web_auth.dart';
+import 'package:qiita_reader/core/constants/constants.dart';
+import 'package:qiita_reader/core/env.dart';
+import 'package:qiita_reader/core/log/logger.dart';
+import 'package:qiita_reader/data/remote_sources/app_auth.dart';
 
 /// ウェブ経由で認証を行う
 // ignore: one_member_abstracts
 abstract interface class WebAuthRepositoryBase {
-  Future<String?> fetchAuthorizationCode({
-    required String url,
-    required String callbackUrlScheme,
-  });
+  Future<String?> fetchAuthorizationCode();
 }
 
 class WebAuthRepository implements WebAuthRepositoryBase {
@@ -17,28 +17,27 @@ class WebAuthRepository implements WebAuthRepositoryBase {
   final ProviderRef<dynamic> ref;
 
   @override
-  Future<String?> fetchAuthorizationCode({
-    required String url,
-    required String callbackUrlScheme,
-  }) async {
+  Future<String?> fetchAuthorizationCode() async {
     try {
-      final webAuth = ref.read(webAuthProvider);
-      // FlutterWebAuth2を使って認証を行う
-      final result = await webAuth.authenticate(
-        // 認証を行う問い合わせ先を指定
-        url: url,
-        // あらかじめ登録した認証が終わったら認可コードを返却する先（このアプリ）の名称を指定
-        callbackUrlScheme: callbackUrlScheme,
-        // ここをtrueにしておくと、iOSだと処理を開始した時の内部ブラウザに移動する時の
-        // 確認のダイアログの表示が省略される
-        options: const FlutterWebAuth2Options(preferEphemeral: true),
+      final webAuth = ref.read(appAuthProvider);
+
+      final result = await webAuth.authorize(
+        AuthorizationRequest(
+          Env.clientId,
+          Constants.redirectUrl,
+          serviceConfiguration: Constants.serviceConfiguration,
+          scopes: Constants.scope,
+        ),
       );
-      // 認可コードを'code'というパラメータで入っているので、それを使って取り出す
-      final code = Uri.parse(result).queryParameters['code'];
+
+      if (result == null || result.authorizationCode == null) {
+        logger.e('accessTokenが取得できませんした', stackTrace: StackTrace.current);
+      }
       // 取り出したコードを返却する
-      return code;
-    } catch (e) {
-      rethrow;
+      return result?.authorizationCode;
+    } catch (e, s) {
+      logger.e('エラーが発生しました', error: e, stackTrace: s);
+      return null;
     }
   }
 }

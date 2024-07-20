@@ -34,39 +34,59 @@ class AuthService implements AuthServiceBase {
   Future<void> login() async {
     // アプリを使って一回でもログインしたかどうかを確認
     final isFirstLogin = await _keyValueStore.getIsFirstLogin();
-    if (isFirstLogin != null && isFirstLogin) {
+    if (isFirstLogin == null || isFirstLogin) {
       // ログインしたことがあればセキュアストレージをnullにする
       await _secureStorage.setAccessToken(null);
     }
 
-    // webAuthで認可コードをとりにいく
-    final code = await _webAuth.fetchAuthorizationCode(
-      url: Constants.authUrl,
-      callbackUrlScheme: 'qiita-reader',
-    );
+    try {
+      // webAuthでアクセストークンをとりにいく
+      final code = await _webAuth.fetchAuthorizationCode();
 
+      if (code == null) {
+        throw Exception('認可コードがnullです');
+      }
+
+      // もらった認可コードでアクセストークンを取得する
+      final accessToken = await _fetchAccessToken(code);
+
+      if (accessToken == null) {
+        throw Exception('アクセストークンががnullです');
+      }
+      // アクセストークンをセキュアストレージに保存する
+      await _secureStorage.setAccessToken(accessToken);
+      if (isFirstLogin == null || isFirstLogin == true) {
+        // 今回が初めてのログインだった場合はフラグをfalseで保存する
+        await _keyValueStore.setIsFirstLogin(value: false);
+      }
+    } catch (e, s) {
+      logger.e('エラーです', error: e, stackTrace: s);
+    }
+  }
+
+  Future<String?> _fetchAccessToken(String code) async {
     // もらった認可コードでアクセストークンを取得する
     final queryParameters = {
       'client_id': Env.clientId,
       'client_secret': Env.clientSecret,
       'code': code,
     };
-    final response = await _httpClient.post<Map<String, dynamic>>(
-      Constants.tokenEndPoint,
-      queryParameters: queryParameters,
-    );
-    final data = response.data;
-    if (data != null) {
-      final accessToken = data['token'];
+    try {
+      final response = await _httpClient.post<Map<String, dynamic>>(
+        Constants.tokenEndPoint,
+        queryParameters: queryParameters,
+      );
 
-      // アクセストークンをセキュアストレージに保存する
-      if (accessToken is String) {
-        await _secureStorage.setAccessToken(accessToken);
-        if (isFirstLogin == null || isFirstLogin == true) {
-          // 今回が初めてのログインだった場合はフラグをfalseで保存する
-          await _keyValueStore.setIsFirstLogin(value: false);
-        }
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final accessToken = response.data?['token'].toString();
+        return accessToken;
+      } else {
+        logger.e('ステータスコード：${response.statusCode}');
+        return null;
       }
+    } catch (e, s) {
+      logger.e('不明なエラー', error: e, stackTrace: s);
+      rethrow;
     }
   }
 
