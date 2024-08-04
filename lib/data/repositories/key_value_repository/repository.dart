@@ -55,7 +55,6 @@ class KeyValueRepository implements KeyValueRepositoryBase {
     final pref = await ref.read(sharedPreferencesProvider.future);
     await pref.clear();
 
-    // カスケード記法で重複する`_onValueChanged`を一つに省略している
     _onValueChanged.add(isFirstLoginKey);
   }
 
