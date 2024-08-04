@@ -14,11 +14,17 @@ import 'package:qiita_reader/data/repositories/web_auth_repository/provider.dart
 import 'package:qiita_reader/data/repositories/web_auth_repository/repository.dart';
 
 abstract interface class AuthServiceBase {
+  /// 初期化
+  Future<void> init();
+
   /// ログイン処理
   Future<void> login();
 
   /// ログアウトの処理
   Future<void> logout();
+
+  /// ログイン状態の変更を通知するストリーム
+  Stream<bool> get isLoggedInStream;
 }
 
 class AuthService implements AuthServiceBase {
@@ -32,6 +38,16 @@ class AuthService implements AuthServiceBase {
   SecureStorageRepositoryBase get _secureStorage =>
       ref.read(secureStorageRepositoryProvider);
   Dio get _httpClient => ref.read(httpProvider);
+  final StreamController<bool> _authStateChanges = StreamController<bool>();
+
+  @override
+  Stream<bool> get isLoggedInStream => _authStateChanges.stream;
+
+  @override
+  Future<void> init() async {
+    final accessToken = await _secureStorage.getAccessToken();
+    _authStateChanges.sink.add(accessToken != null);
+  }
 
   @override
   Future<void> login() async {
@@ -62,6 +78,7 @@ class AuthService implements AuthServiceBase {
         // 今回が初めてのログインだった場合はフラグをfalseで保存する
         await _keyValueStore.setIsFirstLogin(value: false);
       }
+      _authStateChanges.sink.add(true);
     } catch (e, s) {
       logger.e('エラーです', error: e, stackTrace: s);
     }
@@ -107,6 +124,7 @@ class AuthService implements AuthServiceBase {
     if (response.statusCode == 204) {
       // セキュアストレージのアクセストークンを削除する
       await _secureStorage.setAccessToken(null);
+      _authStateChanges.sink.add(false);
     } else {
       logger.e('ログアウトに失敗しました');
     }
