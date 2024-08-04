@@ -14,7 +14,10 @@ import 'package:qiita_reader/data/repositories/web_auth_repository/provider.dart
 import 'package:qiita_reader/data/repositories/web_auth_repository/repository.dart';
 
 abstract interface class AuthServiceBase {
+  /// ログイン処理
   Future<void> login();
+
+  /// ログアウトの処理
   Future<void> logout();
 }
 
@@ -40,14 +43,14 @@ class AuthService implements AuthServiceBase {
     }
 
     try {
-      // webAuthでアクセストークンをとりにいく
+      // webAuthで認可コードを取得
       final code = await _webAuth.fetchAuthorizationCode();
 
       if (code == null) {
         throw Exception('認可コードがnullです');
       }
 
-      // もらった認可コードでアクセストークンを取得する
+      // 認可コードでアクセストークンを取得する
       final accessToken = await _fetchAccessToken(code);
 
       if (accessToken == null) {
@@ -64,6 +67,7 @@ class AuthService implements AuthServiceBase {
     }
   }
 
+  /// 認可コードを使ってアクセストークンを取得する
   Future<String?> _fetchAccessToken(String code) async {
     // もらった認可コードでアクセストークンを取得する
     final queryParameters = {

@@ -8,6 +8,7 @@ import 'package:qiita_reader/data/remote_sources/app_auth.dart';
 /// ウェブ経由で認証を行う
 // ignore: one_member_abstracts
 abstract interface class WebAuthRepositoryBase {
+  /// 認可コードを取得する
   Future<String?> fetchAuthorizationCode();
 }
 
