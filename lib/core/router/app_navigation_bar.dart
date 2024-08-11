@@ -24,6 +24,7 @@ class AppNavigationBar extends StatelessWidget {
         ),
       ],
       onDestinationSelected: _select,
+      backgroundColor: const Color.fromARGB(255, 90, 188, 64),
     );
   }
 
