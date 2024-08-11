@@ -6,19 +6,11 @@ import 'package:qiita_reader/data/local_sources/shared_preference.dart';
 
 /// キーバリューペアを管理するための抽象インターフェース
 abstract interface class KeyValueRepositoryBase {
-  /// 値の変更を監視するためのストリーム
-  ///
-  /// このストリームは、保存された値が変更された時に値の変更通知を送信する
-  Stream<String> get onValueChange;
-
   /// アプリの初回起動の設定を取得
   Future<bool?> getIsFirstLogin();
 
   /// アプリの初回起動の設定を保存
   Future<void> setIsFirstLogin({bool? value});
-
-  /// 全てのデータを初期化する
-  Future<void> initData();
 }
 
 /// アプリケーションのキー・バリュー設定を管理するクラス
@@ -38,25 +30,11 @@ class KeyValueRepository implements KeyValueRepositoryBase {
   /// アイコン設定のキー
   static const isFirstLoginKey = 'isFirstLogin';
 
-  /// 設定値の変更をアプリケーション全体にブロードキャストするための`StreamController`
-  final _onValueChanged = StreamController<String>.broadcast();
-
-  @override
-  Stream<String> get onValueChange => _onValueChanged.stream;
-
   @override
   Future<bool?> getIsFirstLogin() async => _get<bool>(isFirstLoginKey);
 
   @override
   Future<void> setIsFirstLogin({bool? value}) => _set(isFirstLoginKey, value);
-
-  @override
-  Future<void> initData() async {
-    final pref = await ref.read(sharedPreferencesProvider.future);
-    await pref.clear();
-
-    _onValueChanged.add(isFirstLoginKey);
-  }
 
   /// 指定されたキーに関連付けられたデータをSharedPreferencesから取得します。
   ///
@@ -152,8 +130,5 @@ class KeyValueRepository implements KeyValueRepositoryBase {
       case _:
         await pref.setString(key, jsonEncode(value));
     }
-
-    // keyという文字列をストリームに流す
-    _onValueChanged.add(key);
   }
 }

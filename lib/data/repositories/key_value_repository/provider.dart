@@ -8,19 +8,3 @@ part 'provider.g.dart';
 KeyValueRepositoryBase keyValueRepository(KeyValueRepositoryRef ref) {
   return KeyValueRepository(ref);
 }
-
-@riverpod
-Stream<bool?> isFirstLaunch(IsFirstLaunchRef ref) async* {
-  // リポジトリのプロバイダーからリポジトリオブジェクトを取得
-  final repository = ref.read(keyValueRepositoryProvider);
-
-  // 最初の値を取得し、yieldを使用してStreamに出力
-  yield await repository.getIsFirstLogin();
-
-  // リポジトリの値変更通知を購読し、キーの変更のみにフィルターをかける
-  await for (final _ in repository.onValueChange
-      .where((key) => key == KeyValueRepository.isFirstLoginKey)) {
-    // 設定が変更されたとき、新しい値を取得し、yieldでStreamに出力
-    yield await repository.getIsFirstLogin();
-  }
-}

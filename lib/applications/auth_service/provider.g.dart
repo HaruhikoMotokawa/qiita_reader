@@ -20,7 +20,7 @@ final authServiceProvider = Provider<AuthServiceBase>.internal(
 );
 
 typedef AuthServiceRef = ProviderRef<AuthServiceBase>;
-String _$isLoggedInHash() => r'a9fae6fe95a30ab67df5f580e99607b0cd820924';
+String _$isLoggedInHash() => r'63ea8d0aba32a40b61796b037f595d9ab44c8291';
 
 /// See also [isLoggedIn].
 @ProviderFor(isLoggedIn)

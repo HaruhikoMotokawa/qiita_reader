@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qiita_reader/data/local_sources/secure_storage.dart';
 
 abstract interface class SecureStorageRepositoryBase {
-  Stream<String> get onValueChange;
   Future<String?> getAccessToken();
   Future<void> setAccessToken(String? token);
 }
@@ -15,11 +14,6 @@ class SecureStorageRepository implements SecureStorageRepositoryBase {
   final ProviderRef<dynamic> ref;
 
   static const accessTokenKey = 'accessToken';
-
-  final _onValueChanged = StreamController<String>.broadcast();
-
-  @override
-  Stream<String> get onValueChange => _onValueChanged.stream;
 
   @override
   Future<String?> getAccessToken() => _get<String>(accessTokenKey);
@@ -65,7 +59,5 @@ class SecureStorageRepository implements SecureStorageRepositoryBase {
       default:
         throw UnsupportedError('対応していない型です。');
     }
-
-    _onValueChanged.add(key);
   }
 }
