@@ -33,9 +33,10 @@ class WebAuthRepository implements WebAuthRepositoryBase {
 
       if (result == null || result.authorizationCode == null) {
         logger.e('accessTokenが取得できませんした', stackTrace: StackTrace.current);
+        return null;
       }
       // 取り出したコードを返却する
-      return result?.authorizationCode;
+      return result.authorizationCode;
     } catch (e, s) {
       logger.e('エラーが発生しました', error: e, stackTrace: s);
       return null;
