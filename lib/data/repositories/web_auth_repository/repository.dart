@@ -22,6 +22,7 @@ class WebAuthRepository implements WebAuthRepositoryBase {
     try {
       final webAuth = ref.read(appAuthProvider);
 
+      // 認可コードを要求
       final result = await webAuth.authorize(
         AuthorizationRequest(
           Env.clientId,
@@ -32,7 +33,7 @@ class WebAuthRepository implements WebAuthRepositoryBase {
       );
 
       if (result == null || result.authorizationCode == null) {
-        logger.e('accessTokenが取得できませんした', stackTrace: StackTrace.current);
+        logger.e('認可コードが取得できませんした', stackTrace: StackTrace.current);
         return null;
       }
       // 取り出したコードを返却する
