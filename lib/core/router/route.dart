@@ -37,7 +37,7 @@ final rootNavigationKey = GlobalKey<NavigatorState>();
       ],
     ),
     // ログイン後の画面 ここまで ---->
-    // ログイン前の画面
+    // ログイン画面
     TypedGoRoute<LoginRoute>(
       path: '/login',
       name: 'login_screen',
