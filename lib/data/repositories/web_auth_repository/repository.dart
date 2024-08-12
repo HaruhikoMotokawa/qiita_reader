@@ -1,9 +1,9 @@
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qiita_reader/core/constants/constants.dart';
 import 'package:qiita_reader/core/env.dart';
 import 'package:qiita_reader/core/log/logger.dart';
 import 'package:qiita_reader/data/remote_sources/app_auth.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 /// ウェブ経由で認証を行う
 // ignore: one_member_abstracts

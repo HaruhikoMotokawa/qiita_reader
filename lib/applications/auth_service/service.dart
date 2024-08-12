@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qiita_reader/core/constants/constants.dart';
 import 'package:qiita_reader/core/env.dart';
 import 'package:qiita_reader/core/log/logger.dart';
@@ -12,6 +11,7 @@ import 'package:qiita_reader/data/repositories/secure_storage_repository/provide
 import 'package:qiita_reader/data/repositories/secure_storage_repository/repository.dart';
 import 'package:qiita_reader/data/repositories/web_auth_repository/provider.dart';
 import 'package:qiita_reader/data/repositories/web_auth_repository/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 abstract interface class AuthServiceBase {
   /// 初期化

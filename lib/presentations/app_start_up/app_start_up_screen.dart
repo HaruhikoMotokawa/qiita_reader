@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qiita_reader/presentations/app_start_up/provider.dart';
 
 /// 初期化を待つためのウィジェット
-class AppStartupScreen extends HookConsumerWidget {
+class AppStartupScreen extends ConsumerWidget {
   const AppStartupScreen({required this.onLoaded, super.key});
 
   static const _prefix = 'AppStartupScreen';

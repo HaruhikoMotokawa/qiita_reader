@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qiita_reader/data/local_sources/secure_storage.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 abstract interface class SecureStorageRepositoryBase {
   Future<String?> getAccessToken();
