@@ -15,19 +15,11 @@ abstract interface class KeyValueRepositoryBase {
 
 /// アプリケーションのキー・バリュー設定を管理するクラス
 class KeyValueRepository implements KeyValueRepositoryBase {
-  /// アプリケーションのキー・バリュー設定を管理するクラス
   KeyValueRepository(this.ref);
 
-  /// レフ
-  ///
-  /// 今後の変更で変えられるように固定のレフではなくする
   final ProviderRef<dynamic> ref;
 
-  // SharedPreferencesはkeyとvalueで紐づけて保存する
-  // ここでキーを設定するが、各設定の値を関係するプロバイダーに指定できるように
-  // staticで定義する
-
-  /// アイコン設定のキー
+  /// 初めてログインしたかのフラグのキー
   static const isFirstLoginKey = 'isFirstLogin';
 
   @override

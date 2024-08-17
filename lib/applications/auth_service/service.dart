@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qiita_reader/core/constants/constants.dart';
 import 'package:qiita_reader/core/env.dart';
 import 'package:qiita_reader/core/log/logger.dart';
@@ -12,6 +11,7 @@ import 'package:qiita_reader/data/repositories/secure_storage_repository/provide
 import 'package:qiita_reader/data/repositories/secure_storage_repository/repository.dart';
 import 'package:qiita_reader/data/repositories/web_auth_repository/provider.dart';
 import 'package:qiita_reader/data/repositories/web_auth_repository/repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 abstract interface class AuthServiceBase {
   /// 初期化
@@ -45,19 +45,18 @@ class AuthService implements AuthServiceBase {
 
   @override
   Future<void> init() async {
+    // 一回でもログインしたことがあるかを確認
+    final isFirstLogin = await _keyValueStore.getIsFirstLogin();
+    if (isFirstLogin == null || isFirstLogin) {
+      // アプリを再ダウンロードした場合を加味して念のためアクセストークンをnullで登録
+      await _secureStorage.setAccessToken(null);
+    }
     final accessToken = await _secureStorage.getAccessToken();
     _authStateChanges.sink.add(accessToken != null);
   }
 
   @override
   Future<void> login() async {
-    // アプリを使って一回でもログインしたかどうかを確認
-    final isFirstLogin = await _keyValueStore.getIsFirstLogin();
-    if (isFirstLogin == null || isFirstLogin) {
-      // ログインしたことがあればセキュアストレージをnullにする
-      await _secureStorage.setAccessToken(null);
-    }
-
     try {
       // webAuthで認可コードを取得
       final code = await _webAuth.fetchAuthorizationCode();
@@ -74,6 +73,8 @@ class AuthService implements AuthServiceBase {
       }
       // アクセストークンをセキュアストレージに保存する
       await _secureStorage.setAccessToken(accessToken);
+
+      final isFirstLogin = await _keyValueStore.getIsFirstLogin();
       if (isFirstLogin == null || isFirstLogin == true) {
         // 今回が初めてのログインだった場合はフラグをfalseで保存する
         await _keyValueStore.setIsFirstLogin(value: false);
@@ -87,7 +88,8 @@ class AuthService implements AuthServiceBase {
   /// 認可コードを使ってアクセストークンを取得する
   Future<String?> _fetchAccessToken(String code) async {
     // もらった認可コードでアクセストークンを取得する
-    final queryParameters = {
+    // https://qiita.com/api/v2/docs#%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3-1
+    final data = {
       'client_id': Env.clientId,
       'client_secret': Env.clientSecret,
       'code': code,
@@ -95,7 +97,7 @@ class AuthService implements AuthServiceBase {
     try {
       final response = await _httpClient.post<Map<String, dynamic>>(
         Constants.tokenEndPoint,
-        queryParameters: queryParameters,
+        data: data,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

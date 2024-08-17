@@ -7,10 +7,15 @@ import 'package:qiita_reader/presentations/settings/settings_screen.dart';
 
 part 'route.g.dart';
 
+/// アプリケーション全体のナビゲーションを管理するためのキー。
+/// このキーを使うことで、アプリケーションのどこからでも
+/// ナビゲーターに直接アクセスし、画面遷移を制御することができる。
 final rootNavigationKey = GlobalKey<NavigatorState>();
 
+// 大元のルート
 @TypedShellRoute<AppShellRoute>(
   routes: [
+    // ログイン後の画面 ここから ---->
     TypedStatefulShellRoute<NavigationShellRoute>(
       branches: [
         TypedStatefulShellBranch<ListBranch>(
@@ -31,6 +36,8 @@ final rootNavigationKey = GlobalKey<NavigatorState>();
         ),
       ],
     ),
+    // ログイン後の画面 ここまで ---->
+    // ログイン画面
     TypedGoRoute<LoginRoute>(
       path: '/login',
       name: 'login_screen',

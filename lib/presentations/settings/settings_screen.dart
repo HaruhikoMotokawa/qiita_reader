@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:qiita_reader/applications/auth_service/provider.dart';
+import 'package:qiita_reader/presentations/settings/settings_view_model.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.watch(settingsViewModelProvider.notifier);
     return Scaffold(
       body: Center(
         child: Column(
@@ -15,13 +16,9 @@ class SettingsScreen extends StatelessWidget {
           children: [
             const Text('設定'),
             const Gap(50),
-            Consumer(
-              builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                return ElevatedButton(
-                  onPressed: ref.read(authServiceProvider).logout,
-                  child: const Text('ログアウト'),
-                );
-              },
+            ElevatedButton(
+              onPressed: viewModel.startLogout,
+              child: const Text('ログアウト'),
             ),
           ],
         ),
