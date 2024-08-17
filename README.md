@@ -1,3 +1,5 @@
 # qiita_reader
 
-A new Flutter project.
+このブランチはQiitaの記事に掲載したサンプルプロジェクトのソースコートです。
+
+リンク：
